@@ -62,7 +62,9 @@
     - Support log levels from environment variable
     - Add context and error serialization
     - _Requirements: 7.1, 7.2, 7.3, 7.4, 7.5_
-  - [ ] 3.2 Create retry utility with exponential backoff
+  - [-] 3.2 Create retry utility with exponential backoff
+
+
     - Implement configurable retry logic
     - Support max attempts, initial delay, backoff multiplier
     - Add logging for retry attempts
@@ -85,8 +87,11 @@
     - Integrate retry utility for error handling
     - _Requirements: 1.1, 1.2, 1.3_
 
-- [ ] 5. Implement tariff repository
-  - [ ] 5.1 Create tariff repository in tariff-repository.ts
+- [x] 5. Implement tariff repository
+
+
+  - [x] 5.1 Create tariff repository in tariff-repository.ts
+
     - Implement upsertDailyTariffs method with Knex onConflict
     - Implement getLatestDailyTariffs method with sorting by coefficient
     - Implement getTariffsByDate method
