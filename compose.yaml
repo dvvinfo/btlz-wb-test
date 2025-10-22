@@ -60,6 +60,19 @@ services:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       PORT: ${APP_PORT}
       NODE_ENV: production
+      # WB API
+      WB_API_TOKEN: ${WB_API_TOKEN}
+      WB_API_BASE_URL: ${WB_API_BASE_URL:-https://common-api.wildberries.ru}
+      WB_API_TIMEOUT: ${WB_API_TIMEOUT:-30000}
+      # Google Sheets
+      GOOGLE_SERVICE_ACCOUNT_EMAIL: ${GOOGLE_SERVICE_ACCOUNT_EMAIL}
+      GOOGLE_PRIVATE_KEY: ${GOOGLE_PRIVATE_KEY}
+      GOOGLE_SPREADSHEET_IDS: ${GOOGLE_SPREADSHEET_IDS}
+      # Scheduler
+      TARIFF_FETCH_CRON: ${TARIFF_FETCH_CRON:-0 * * * *}
+      SHEETS_SYNC_CRON: ${SHEETS_SYNC_CRON:-0 */6 * * *}
+      # Logging
+      LOG_LEVEL: ${LOG_LEVEL:-info}
 
     ports:
       - ${APP_PORT}:${APP_PORT}
