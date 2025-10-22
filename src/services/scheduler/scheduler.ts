@@ -90,7 +90,6 @@ export class Scheduler {
                 }
             },
             {
-                scheduled: true,
                 timezone: "UTC",
             },
         );
@@ -138,7 +137,6 @@ export class Scheduler {
                 }
             },
             {
-                scheduled: true,
                 timezone: "UTC",
             },
         );

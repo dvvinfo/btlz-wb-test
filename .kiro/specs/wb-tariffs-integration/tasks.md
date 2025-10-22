@@ -178,11 +178,7 @@
 
 - [x]   10. Update documentation
 
-
-
-
     - [x] 10.1 Update README.md with comprehensive setup instructions
-
 
         - Document all environment variables
         - Explain Google Service Account setup
@@ -190,29 +186,36 @@
         - Add troubleshooting section
         - Document cron schedule format
         - _Requirements: 5.5_
-    - [x] 10.2 Add inline code documentation
 
+    - [x] 10.2 Add inline code documentation
 
         - Add JSDoc comments to all public methods
 
         - Document complex logic and algorithms
         - _Requirements: 7.1_
 
-- [ ]   11. Final integration and testing
-    - [ ] 11.1 Test complete flow with docker compose up
+- [x]   11. Final integration and testing
+
+    - [x] 11.1 Test complete flow with docker compose up
+
         - Verify migrations run successfully
+
         - Verify scheduler starts
         - Check logs for hourly WB API calls
         - Verify data appears in database
         - Verify Google Sheets updates
         - _Requirements: 5.1, 5.2, 5.3_
-    - [ ] 11.2 Test error scenarios
+
+    - [x] 11.2 Test error scenarios
+
         - Invalid WB API token
         - Network failures
         - Invalid Google credentials
         - Database connection issues
         - _Requirements: 1.3, 3.5_
-    - [ ] 11.3 Verify data correctness
+
+    - [x] 11.3 Verify data correctness
+
         - Check tariff data format in database
         - Verify daily updates (not duplicates)
         - Verify Google Sheets sorting by coefficient
