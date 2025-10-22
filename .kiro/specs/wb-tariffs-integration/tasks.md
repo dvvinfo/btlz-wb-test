@@ -123,26 +123,38 @@
     - Return sorted by coefficient
     - _Requirements: 2.5, 8.2_
 
-- [ ] 7. Implement Google Sheets integration
-  - [ ] 7.1 Create Google Sheets configuration in sheets-config.ts
+- [x] 7. Implement Google Sheets integration
+
+
+
+  - [x] 7.1 Create Google Sheets configuration in sheets-config.ts
+
+
     - Load service account credentials from environment
     - Parse spreadsheet IDs from comma-separated string
     - Validate configuration
     - _Requirements: 4.1, 4.2, 4.5_
-  - [ ] 7.2 Implement Google Sheets client in sheets-client.ts
+  - [x] 7.2 Implement Google Sheets client in sheets-client.ts
+
+
     - Create authenticate method using googleapis
     - Implement updateSheet method for batch updates
     - Implement clearSheet method
     - Handle rate limiting and errors
     - _Requirements: 3.1, 3.5_
-  - [ ] 7.3 Implement Google Sheets sync in sheets-sync.ts
+  - [x] 7.3 Implement Google Sheets sync in sheets-sync.ts
+
+
+
     - Implement syncSheet method for single spreadsheet
     - Format tariff data as 2D array with headers
     - Sort data by coefficient ascending
     - Clear and update "stocks_coefs" worksheet
     - Format coefficient with 2 decimal places
     - _Requirements: 3.2, 3.3, 3.4, 8.3, 8.4, 8.5_
-  - [ ] 7.4 Implement syncAllSheets method
+  - [x] 7.4 Implement syncAllSheets method
+
+
     - Process all configured spreadsheets
     - Use Promise.allSettled for independent error handling
     - Log results for each spreadsheet
