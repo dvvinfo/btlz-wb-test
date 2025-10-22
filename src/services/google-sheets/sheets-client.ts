@@ -11,15 +11,25 @@ export class SheetsClient {
     private auth: any;
     private sheets: any;
     private config = sheetsConfig;
+    private isConfigured: boolean;
 
     constructor() {
-        this.authenticate();
+        this.isConfigured = this.config !== null;
+        if (this.isConfigured) {
+            this.authenticate();
+        } else {
+            logger.warn("Google Sheets client initialized but not configured");
+        }
     }
 
     /**
      * Authenticate with Google Sheets API using service account
      */
     private authenticate(): void {
+        if (!this.config) {
+            throw new Error("Cannot authenticate: Google Sheets is not configured");
+        }
+
         try {
             logger.info("Authenticating with Google Sheets API");
 

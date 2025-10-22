@@ -21,6 +21,11 @@ export interface SyncResult {
  */
 export class SheetsSync {
     private config = sheetsConfig;
+    private isConfigured: boolean;
+
+    constructor() {
+        this.isConfigured = this.config !== null;
+    }
 
     /**
      * Sync data to a single spreadsheet
@@ -28,6 +33,15 @@ export class SheetsSync {
      * @returns Promise with sync result
      */
     async syncSheet(spreadsheetId: string): Promise<SyncResult> {
+        if (!this.isConfigured || !this.config) {
+            logger.warn("Google Sheets sync skipped: not configured");
+            return {
+                spreadsheetId,
+                success: false,
+                rowsUpdated: 0,
+                error: "Google Sheets is not configured",
+            };
+        }
         logger.info("Starting sync for spreadsheet", { spreadsheetId });
         const startTime = Date.now();
 
@@ -85,11 +99,17 @@ export class SheetsSync {
      * @returns Promise with array of sync results
      */
     async syncAllSheets(): Promise<SyncResult[]> {
-        logger.info(`Starting sync for ${this.config.spreadsheetIds.length} spreadsheet(s)`);
+        if (!this.isConfigured || !this.config) {
+            logger.info("Google Sheets sync skipped: not configured");
+            return [];
+        }
+
+        const config = this.config; // Store in local variable for TypeScript
+        logger.info(`Starting sync for ${config.spreadsheetIds.length} spreadsheet(s)`);
         const startTime = Date.now();
 
         // Process all spreadsheets independently
-        const syncPromises = this.config.spreadsheetIds.map((spreadsheetId) => this.syncSheet(spreadsheetId));
+        const syncPromises = config.spreadsheetIds.map((spreadsheetId) => this.syncSheet(spreadsheetId));
 
         // Wait for all to complete (don't fail on individual errors)
         const results = await Promise.allSettled(syncPromises);
@@ -99,7 +119,7 @@ export class SheetsSync {
             if (result.status === "fulfilled") {
                 return result.value;
             } else {
-                const spreadsheetId = this.config.spreadsheetIds[index];
+                const spreadsheetId = config.spreadsheetIds[index];
                 const errorMessage = result.reason instanceof Error ? result.reason.message : String(result.reason);
 
                 logger.error("Sync promise rejected for spreadsheet", {

@@ -27,6 +27,11 @@ export class TariffService {
             }
 
             logger.info(`Received ${boxTariffs.length} tariffs from WB API`);
+            
+            // Log first tariff for debugging
+            if (boxTariffs.length > 0) {
+                logger.debug("Sample tariff structure", { sample: boxTariffs[0] });
+            }
 
             // Transform to processed tariffs
             const processedTariffs = this.transformBoxTariffs(boxTariffs);
@@ -82,17 +87,26 @@ export class TariffService {
 
         for (const boxTariff of boxTariffs) {
             try {
-                // Extract coefficient from boxDeliveryAndStorageExpr
-                // Expected format: "x1.5" or "1.5" or similar
-                const coefficient = this.extractCoefficient(boxTariff.boxDeliveryAndStorageExpr);
+                // Calculate coefficient from delivery/storage fields
+                const coefficient = this.calculateCoefficient(boxTariff);
+                
+                if (coefficient === 0) {
+                    logger.debug("Skipping tariff with zero coefficient", {
+                        warehouse: boxTariff.warehouseName,
+                    });
+                    continue;
+                }
 
                 // Determine delivery type from available fields
                 const deliveryType = this.determineDeliveryType(boxTariff);
+                
+                // Use "Box" as default box type if not specified
+                const boxType = boxTariff.boxTypeName || "Box";
 
                 processedTariffs.push({
                     date: today,
                     warehouseName: boxTariff.warehouseName,
-                    boxType: boxTariff.boxTypeName,
+                    boxType: boxType,
                     deliveryType: deliveryType,
                     coefficient: coefficient,
                     rawData: boxTariff,
@@ -100,13 +114,51 @@ export class TariffService {
             } catch (error) {
                 logger.warn("Failed to transform box tariff, skipping", {
                     warehouse: boxTariff.warehouseName,
-                    boxType: boxTariff.boxTypeName,
                     error: error instanceof Error ? error.message : String(error),
                 });
             }
         }
 
         return processedTariffs;
+    }
+
+    /**
+     * Calculate coefficient from tariff fields
+     * Uses boxDeliveryBase or boxDeliveryLiter as the primary coefficient
+     * @param {BoxTariff} boxTariff - Box tariff data
+     * @returns Coefficient as number
+     */
+    private calculateCoefficient(boxTariff: BoxTariff): number {
+        // Try boxDeliveryAndStorageExpr first (if present)
+        if (boxTariff.boxDeliveryAndStorageExpr) {
+            return this.extractCoefficient(boxTariff.boxDeliveryAndStorageExpr);
+        }
+
+        // Try boxDeliveryBase
+        if (boxTariff.boxDeliveryBase) {
+            const coef = this.parseNumber(boxTariff.boxDeliveryBase);
+            if (coef > 0) return coef;
+        }
+
+        // Try boxDeliveryLiter
+        if (boxTariff.boxDeliveryLiter) {
+            const coef = this.parseNumber(boxTariff.boxDeliveryLiter);
+            if (coef > 0) return coef;
+        }
+
+        // Try boxStorageBase
+        if (boxTariff.boxStorageBase) {
+            const coef = this.parseNumber(boxTariff.boxStorageBase);
+            if (coef > 0) return coef;
+        }
+
+        // Try boxStorageLiter
+        if (boxTariff.boxStorageLiter) {
+            const coef = this.parseNumber(boxTariff.boxStorageLiter);
+            if (coef > 0) return coef;
+        }
+
+        return 0;
     }
 
     /**
@@ -130,6 +182,18 @@ export class TariffService {
     }
 
     /**
+     * Parse number from string (handles comma as decimal separator)
+     * @param {string} value - String value
+     * @returns Parsed number
+     */
+    private parseNumber(value: string): number {
+        // Replace comma with dot for decimal separator
+        const normalized = value.replace(",", ".");
+        const num = parseFloat(normalized);
+        return isNaN(num) ? 0 : num;
+    }
+
+    /**
      * Determine delivery type from box tariff fields
      * @param {BoxTariff} boxTariff - Box tariff data
      * @returns Delivery type string
@@ -148,6 +212,11 @@ export class TariffService {
         // Check storage fields
         if (boxTariff.boxStorageBase && boxTariff.boxStorageBase !== "0") {
             return "Storage";
+        }
+
+        // Use expression as fallback
+        if (boxTariff.boxDeliveryAndStorageExpr) {
+            return "Delivery";
         }
 
         // Default

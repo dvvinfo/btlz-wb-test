@@ -14,26 +14,26 @@ export interface SheetsConfig {
 }
 
 /**
- * Get Google Sheets configuration from environment
- * @returns Google Sheets configuration object
- * @throws Error if configuration is invalid
+ * Check if Google Sheets is configured
+ * @returns True if Google Sheets is configured
  */
-export function getSheetsConfig(): SheetsConfig {
+export function isSheetsConfigured(): boolean {
+    return !!(env.GOOGLE_SERVICE_ACCOUNT_EMAIL && env.GOOGLE_PRIVATE_KEY && env.GOOGLE_SPREADSHEET_IDS);
+}
+
+/**
+ * Get Google Sheets configuration from environment
+ * @returns Google Sheets configuration object or null if not configured
+ */
+export function getSheetsConfig(): SheetsConfig | null {
     const serviceAccountEmail = env.GOOGLE_SERVICE_ACCOUNT_EMAIL;
     const privateKey = env.GOOGLE_PRIVATE_KEY;
     const spreadsheetIds = env.GOOGLE_SPREADSHEET_IDS;
 
-    // Validate configuration
-    if (!serviceAccountEmail) {
-        throw new Error("GOOGLE_SERVICE_ACCOUNT_EMAIL is not configured");
-    }
-
-    if (!privateKey) {
-        throw new Error("GOOGLE_PRIVATE_KEY is not configured");
-    }
-
-    if (!spreadsheetIds || spreadsheetIds.length === 0) {
-        throw new Error("GOOGLE_SPREADSHEET_IDS is not configured or empty");
+    // Check if configured
+    if (!serviceAccountEmail || !privateKey || !spreadsheetIds) {
+        logger.info("Google Sheets is not configured, sync will be disabled");
+        return null;
     }
 
     // Validate spreadsheet ID format (basic check)
@@ -63,4 +63,5 @@ export function getSheetsConfig(): SheetsConfig {
     };
 }
 
-export default getSheetsConfig();
+const config = getSheetsConfig();
+export default config;

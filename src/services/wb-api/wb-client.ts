@@ -17,9 +17,11 @@ export class WBApiClient {
      * @throws Error if API request fails after retries
      */
     async fetchBoxTariffs(): Promise<BoxTariff[]> {
-        const url = `${this.config.baseUrl}${this.config.endpoints.boxTariffs}`;
+        // WB API requires date parameter in YYYY-MM-DD format
+        const today = new Date().toISOString().split("T")[0];
+        const url = `${this.config.baseUrl}${this.config.endpoints.boxTariffs}?date=${today}`;
 
-        logger.info("Fetching box tariffs from WB API", { url });
+        logger.info("Fetching box tariffs from WB API", { url, date: today });
 
         const startTime = Date.now();
 

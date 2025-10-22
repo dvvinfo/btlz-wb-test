@@ -5,25 +5,28 @@ import { z } from "zod";
  */
 export interface BoxTariff {
     warehouseName: string;
-    boxTypeName: string;
-    boxDeliveryAndStorageExpr: string;
-    boxDeliveryBase: string;
-    boxDeliveryLiter: string;
-    boxStorageBase: string;
-    boxStorageLiter: string;
+    boxTypeName?: string;
+    boxDeliveryAndStorageExpr?: string;
+    boxDeliveryBase?: string;
+    boxDeliveryLiter?: string;
+    boxStorageBase?: string;
+    boxStorageLiter?: string;
+    // Additional fields that may be present
+    [key: string]: any;
 }
 
 /**
  * Zod schema for single box tariff
+ * Some fields may be undefined in API response
  */
 export const BoxTariffSchema = z.object({
     warehouseName: z.string(),
-    boxTypeName: z.string(),
-    boxDeliveryAndStorageExpr: z.string(),
-    boxDeliveryBase: z.string(),
-    boxDeliveryLiter: z.string(),
-    boxStorageBase: z.string(),
-    boxStorageLiter: z.string(),
+    boxTypeName: z.string().optional(),
+    boxDeliveryAndStorageExpr: z.string().optional(),
+    boxDeliveryBase: z.string().optional(),
+    boxDeliveryLiter: z.string().optional(),
+    boxStorageBase: z.string().optional(),
+    boxStorageLiter: z.string().optional(),
 });
 
 /**

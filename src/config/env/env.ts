@@ -31,16 +31,22 @@ const envSchema = z.object({
                 .transform((value) => parseInt(value)),
         ])
         .default("30000"),
-    // Google Sheets configuration
-    GOOGLE_SERVICE_ACCOUNT_EMAIL: z.union([z.undefined(), z.string().email("Invalid service account email")]),
-    GOOGLE_PRIVATE_KEY: z.union([z.undefined(), z.string().min(1, "Google private key is required")]),
-    GOOGLE_SPREADSHEET_IDS: z.union([
-        z.undefined(),
-        z
-            .string()
-            .min(1, "At least one spreadsheet ID is required")
-            .transform((value) => value.split(",").map((id) => id.trim())),
-    ]),
+    // Google Sheets configuration (optional)
+    GOOGLE_SERVICE_ACCOUNT_EMAIL: z
+        .string()
+        .optional()
+        .transform((val) => (val && val.trim().length > 0 ? val : undefined)),
+    GOOGLE_PRIVATE_KEY: z
+        .string()
+        .optional()
+        .transform((val) => (val && val.trim().length > 0 ? val : undefined)),
+    GOOGLE_SPREADSHEET_IDS: z
+        .string()
+        .optional()
+        .transform((val) => {
+            if (!val || val.trim().length === 0) return undefined;
+            return val.split(",").map((id) => id.trim());
+        }),
     // Scheduler configuration
     TARIFF_FETCH_CRON: z.string().default("0 * * * *"),
     SHEETS_SYNC_CRON: z.string().default("0 */6 * * *"),

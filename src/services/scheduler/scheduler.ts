@@ -101,6 +101,12 @@ export class Scheduler {
      * Schedule Google Sheets sync
      */
     scheduleSheetsSync(): void {
+        // Check if Google Sheets is configured
+        if (!env.GOOGLE_SERVICE_ACCOUNT_EMAIL || !env.GOOGLE_PRIVATE_KEY || !env.GOOGLE_SPREADSHEET_IDS) {
+            logger.info("Google Sheets sync not scheduled: not configured");
+            return;
+        }
+
         const cronExpression = env.SHEETS_SYNC_CRON || "0 */6 * * *";
 
         logger.info("Scheduling Google Sheets sync", { cron: cronExpression });
