@@ -34,9 +34,16 @@
 
     - Create migration with name "create_tariffs_table"
     - _Requirements: 6.1_
+
+
+
+
+
   - [ ] 2.2 Define tariffs table schema in migration
     - Add columns: id, date, warehouse_name, box_type, delivery_type, coefficient, raw_data, created_at, updated_at
     - Add unique constraint on (date, warehouse_name, box_type, delivery_type)
+
+
     - Add indexes on date, warehouse_name, and coefficient
     - _Requirements: 6.2, 6.3, 6.4, 6.5, 2.4_
 
