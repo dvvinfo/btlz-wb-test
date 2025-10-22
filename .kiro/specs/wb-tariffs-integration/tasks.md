@@ -102,8 +102,13 @@
     - Handle constraint violations gracefully
     - _Requirements: 7.2_
 
-- [ ] 6. Implement tariff service
-  - [ ] 6.1 Create tariff service in tariff-service.ts
+- [x] 6. Implement tariff service
+
+
+
+  - [x] 6.1 Create tariff service in tariff-service.ts
+
+
     - Implement fetchAndStoreTariffs method
     - Call WB API client to fetch data
     - Transform API response to ProcessedTariff format
@@ -111,7 +116,9 @@
     - Call repository to upsert data
     - Add comprehensive logging
     - _Requirements: 1.1, 1.2, 1.4, 1.5, 2.1, 2.2, 7.1, 7.2_
-  - [ ] 6.2 Implement getLatestDailyTariffs method
+  - [x] 6.2 Implement getLatestDailyTariffs method
+
+
     - Retrieve latest daily snapshot from repository
     - Return sorted by coefficient
     - _Requirements: 2.5, 8.2_
